@@ -2,29 +2,29 @@
 	"portail": [
 		{
 			"date": "2026-07-26",
-			"total": 1,
-			"up": 1
+			"total": 2,
+			"up": 2
 		}
 	],
 	"espace-marketing": [
 		{
 			"date": "2026-07-26",
-			"total": 1,
-			"up": 1
+			"total": 2,
+			"up": 2
 		}
 	],
 	"suivi": [
 		{
 			"date": "2026-07-26",
-			"total": 1,
-			"up": 1
+			"total": 2,
+			"up": 2
 		}
 	],
 	"envoi": [
 		{
 			"date": "2026-07-26",
-			"total": 1,
-			"up": 1
+			"total": 2,
+			"up": 2
 		}
 	]
 }
