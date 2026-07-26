@@ -1,0 +1,47 @@
+name: Sonde de disponibilité
+
+# Toutes les 5 minutes. GitHub traite les crons en « meilleur effort » : un tour
+# peut être retardé de quelques minutes en période de charge. Ce n'est pas un
+# problème ici — l'agrégat est journalier, et un tour manqué ne fausse pas un
+# pourcentage calculé sur des centaines de mesures.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+# Une seule sonde à la fois : deux exécutions concurrentes écriraient le même
+# fichier et l'une écraserait l'autre.
+concurrency:
+  group: probe
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Sonder les services
+        run: node scripts/probe.mjs
+
+      - name: Publier les mesures
+        run: |
+          if git diff --quiet -- data/; then
+            echo "Aucun changement d'état ni de compteur — rien à publier."
+            exit 0
+          fi
+          git config user.name  "sendly-status-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/
+          git commit -m "chore(sonde): mesure $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          # Le cron peut se chevaucher avec une modification manuelle : on
+          # rejoue par-dessus plutôt que d'échouer.
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          git push

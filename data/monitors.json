@@ -1,0 +1,43 @@
+{
+  "_comment": [
+    "Les services SURVEILLÉS, du point de vue du client — pas du point de vue",
+    "de l'infrastructure. Un client se moque de savoir quel conteneur est",
+    "tombé ; il veut savoir s'il peut se connecter, si ses e-mails partent, et",
+    "si son suivi fonctionne.",
+    "",
+    "Le provisionneur n'y figure PAS : il vit derrière le réseau privé, donc",
+    "injoignable depuis l'extérieur. L'inclure afficherait un service",
+    "perpétuellement en panne — un tableau qui crie au loup n'est plus lu."
+  ],
+  "monitors": [
+    {
+      "id": "portail",
+      "name": "Portail Sendly",
+      "description": "Connexion, tableau de bord et réglages de votre compte.",
+      "url": "https://marketing.eweb-agency.fr/fr",
+      "expect": [200]
+    },
+    {
+      "id": "espace-marketing",
+      "name": "Espace marketing",
+      "description": "Vos contacts, segments, campagnes et e-mails.",
+      "url": "https://eweb-agency.marketing.eweb-agency.fr/s/login",
+      "expect": [200]
+    },
+    {
+      "id": "suivi",
+      "name": "Script de suivi",
+      "description": "Le script installé sur votre site, qui suit les visites.",
+      "url": "https://eweb-agency.marketing.eweb-agency.fr/sendly.js",
+      "expect": [200]
+    },
+    {
+      "id": "envoi",
+      "name": "Service d'envoi",
+      "description": "L'acheminement de vos e-mails vers les boîtes de réception.",
+      "url": "https://api.eu.mailgun.net/v3/domains",
+      "expect": [200, 401],
+      "expectComment": "401 = service vivant, authentification requise. On mesure la disponibilité, pas nos droits d'accès."
+    }
+  ]
+}

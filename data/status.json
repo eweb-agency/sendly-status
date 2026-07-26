@@ -1,0 +1,30 @@
+{
+	"checkedAt": "2026-07-26T22:27:52.751Z",
+	"allUp": true,
+	"monitors": {
+		"portail": {
+			"up": true,
+			"status": 200,
+			"ms": 161,
+			"checkedAt": "2026-07-26T22:27:52.751Z"
+		},
+		"espace-marketing": {
+			"up": true,
+			"status": 200,
+			"ms": 128,
+			"checkedAt": "2026-07-26T22:27:52.751Z"
+		},
+		"suivi": {
+			"up": true,
+			"status": 200,
+			"ms": 86,
+			"checkedAt": "2026-07-26T22:27:52.751Z"
+		},
+		"envoi": {
+			"up": true,
+			"status": 401,
+			"ms": 57,
+			"checkedAt": "2026-07-26T22:27:52.751Z"
+		}
+	}
+}

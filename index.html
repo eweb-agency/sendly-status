@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>État des services — Sendly</title>
+<meta name="description" content="Disponibilité en temps réel des services Sendly : portail, espace marketing, suivi et envoi d'e-mails." />
+<meta name="robots" content="index, follow" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>📡</text></svg>" />
+<style>
+  :root {
+    --ground: #ffffff;
+    --panel: #ffffff;
+    --ink: #14161c;
+    --muted: #5b6070;
+    --faint: #8a8fa0;
+    --line: #e4e6ed;
+    --brand: #004fff;
+    --up: #16a34a;
+    --up-soft: #dcfce7;
+    --down: #dc2626;
+    --down-soft: #fee2e2;
+    --unknown: #d4d7e0;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0e1016; --panel: #14171f; --ink: #e9eaf0; --muted: #a0a6b8;
+      --faint: #767c90; --line: #262a36; --brand: #6e97ff;
+      --up: #4ade80; --up-soft: rgba(74,222,128,.14);
+      --down: #f87171; --down-soft: rgba(248,113,113,.14);
+      --unknown: #2c3140;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+
+  header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2.5rem; }
+  .brand { font-size: 1.35rem; font-weight: 750; letter-spacing: -.02em; color: var(--brand); }
+  .brand span { color: var(--ink); font-weight: 500; font-size: .9rem; margin-left: .6rem; letter-spacing: 0; }
+
+  .hero {
+    display: flex; align-items: center; gap: .9rem;
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 1.4rem 1.5rem; margin-bottom: 2rem; background: var(--panel);
+  }
+  .hero.up { border-color: var(--up); background: var(--up-soft); }
+  .hero.down { border-color: var(--down); background: var(--down-soft); }
+  .hero .dot { width: 1.6rem; height: 1.6rem; border-radius: 50%; flex: 0 0 auto; display: grid; place-items: center; color: #fff; font-size: .95rem; }
+  .hero.up .dot { background: var(--up); }
+  .hero.down .dot { background: var(--down); }
+  .hero.unknown .dot { background: var(--faint); }
+  .hero h1 { margin: 0; font-size: 1.15rem; font-weight: 650; letter-spacing: -.01em; }
+  .hero p { margin: .15rem 0 0; font-size: .85rem; color: var(--muted); }
+
+  .service { border-top: 1px solid var(--line); padding: 1.25rem 0; }
+  .service:last-of-type { border-bottom: 1px solid var(--line); }
+  .service-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .service-name { font-weight: 620; }
+  .service-state { font-size: .82rem; font-weight: 600; }
+  .service-state.up { color: var(--up); }
+  .service-state.down { color: var(--down); }
+  .service-state.unknown { color: var(--faint); }
+  .service-desc { margin: .1rem 0 .8rem; font-size: .85rem; color: var(--muted); }
+
+  .bars { display: flex; gap: 2px; height: 30px; align-items: stretch; }
+  .bars i {
+    flex: 1 1 0; min-width: 2px; border-radius: 2px; background: var(--unknown);
+    transition: opacity .15s;
+  }
+  .bars i.ok { background: var(--up); }
+  .bars i.ko { background: var(--down); }
+  .bars i.partial { background: linear-gradient(var(--down) 45%, var(--up) 45%); }
+  .bars-legend { display: flex; justify-content: space-between; font-size: .72rem; color: var(--faint); margin-top: .4rem; }
+
+  h2 { font-size: .78rem; text-transform: uppercase; letter-spacing: .09em; color: var(--faint); margin: 2.5rem 0 .75rem; }
+  .incident { border: 1px solid var(--line); border-radius: 10px; padding: .85rem 1rem; margin-bottom: .5rem; font-size: .9rem; background: var(--panel); }
+  .incident b { font-weight: 620; }
+  .incident .when { display: block; font-size: .78rem; color: var(--muted); margin-top: .15rem; }
+  .empty { font-size: .9rem; color: var(--muted); }
+
+  footer { margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--line); font-size: .8rem; color: var(--faint); display: flex; flex-wrap: wrap; gap: .35rem 1rem; justify-content: space-between; }
+  footer a { color: var(--brand); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">Sendly<span>État des services</span></div>
+  </header>
+
+  <div class="hero unknown" id="hero">
+    <div class="dot" id="hero-dot" aria-hidden="true">•</div>
+    <div>
+      <h1 id="hero-title">Récupération de l'état…</h1>
+      <p id="hero-sub"></p>
+    </div>
+  </div>
+
+  <div id="services"></div>
+
+  <h2>Incidents récents</h2>
+  <div id="incidents"><p class="empty">Chargement…</p></div>
+
+  <footer>
+    <span id="checked"></span>
+    <span><a href="https://marketing.eweb-agency.fr">Retour à Sendly</a></span>
+  </footer>
+
+</div>
+
+<script>
+/**
+ * ⚠️ RÈGLE : NE JAMAIS AFFICHER DE VERT PAR DÉFAUT.
+ *
+ * Si les données ne se chargent pas, la page dit qu'elle ne sait pas. Une page
+ * de statut qui affiche « tout va bien » alors qu'elle n'a rien mesuré est
+ * pire qu'une page absente : elle ment à quelqu'un qui subit une panne.
+ * L'état initial du bandeau est donc « inconnu », et il ne devient vert que
+ * sur une mesure effectivement lue.
+ */
+const HISTORY_DAYS = 90;
+
+const frDate = (iso) =>
+  new Date(iso).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" });
+
+function setHero(state, title, sub) {
+  const hero = document.getElementById("hero");
+  hero.className = "hero " + state;
+  document.getElementById("hero-dot").textContent =
+    state === "up" ? "✓" : state === "down" ? "!" : "•";
+  document.getElementById("hero-title").textContent = title;
+  document.getElementById("hero-sub").textContent = sub ?? "";
+}
+
+/** Les 90 derniers jours, les plus anciens à gauche. Un jour sans mesure reste gris. */
+function renderBars(days) {
+  const byDate = new Map(days.map((d) => [d.date, d]));
+  const cells = [];
+  for (let i = HISTORY_DAYS - 1; i >= 0; i--) {
+    const date = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
+    const day = byDate.get(date);
+    let cls = "";
+    let label = `${date} — aucune mesure`;
+    if (day && day.total > 0) {
+      const ratio = day.up / day.total;
+      cls = ratio === 1 ? "ok" : ratio === 0 ? "ko" : "partial";
+      label = `${date} — ${Math.round(ratio * 1000) / 10} % de disponibilité`;
+    }
+    cells.push(`<i class="${cls}" title="${label}"></i>`);
+  }
+  return `<div class="bars">${cells.join("")}</div>
+    <div class="bars-legend"><span>il y a 90 jours</span><span>aujourd'hui</span></div>`;
+}
+
+/**
+ * Disponibilité ET étendue réelle de la mesure.
+ *
+ * Annoncer « 100 % sur 90 jours » au bout d'une journée de mesures est vrai au
+ * sens strict et trompeur au sens utile : le lecteur comprend « ça tourne
+ * depuis trois mois ». On annonce donc le nombre de jours RÉELLEMENT mesurés
+ * tant que la fenêtre n'est pas pleine.
+ */
+function uptimeOf(days) {
+  const measured = days.filter((d) => d.total > 0);
+  const total = measured.reduce((n, d) => n + d.total, 0);
+  if (total === 0) return null;
+  const up = measured.reduce((n, d) => n + d.up, 0);
+  return {
+    percent: Math.round((up / total) * 1000) / 10,
+    days: measured.length,
+  };
+}
+
+async function load() {
+  let monitors, status, history, incidents;
+  try {
+    [monitors, status, history, incidents] = await Promise.all([
+      fetch("./data/monitors.json", { cache: "no-store" }).then((r) => r.json()),
+      fetch("./data/status.json", { cache: "no-store" }).then((r) => r.json()),
+      fetch("./data/history.json", { cache: "no-store" }).then((r) => r.json()),
+      fetch("./data/incidents.json", { cache: "no-store" }).then((r) => r.json()),
+    ]);
+  } catch {
+    setHero("unknown", "Impossible de récupérer l'état des services",
+      "Cette page n'a pas pu charger ses données. Cela ne signifie pas que Sendly est en panne.");
+    document.getElementById("incidents").innerHTML =
+      '<p class="empty">Indisponible.</p>';
+    return;
+  }
+
+  const down = monitors.monitors.filter((m) => status.monitors?.[m.id]?.up === false);
+  if (down.length === 0) {
+    setHero("up", "Tous les services fonctionnent",
+      "Aucune interruption détectée sur les services surveillés.");
+  } else {
+    setHero("down",
+      down.length === 1
+        ? `${down[0].name} ne répond pas`
+        : `${down.length} services ne répondent pas`,
+      "Nous en sommes informés. Cette page suit l'évolution.");
+  }
+
+  document.getElementById("services").innerHTML = monitors.monitors.map((m) => {
+    const current = status.monitors?.[m.id];
+    const days = history[m.id] ?? [];
+    const up = uptimeOf(days);
+    const state = current ? (current.up ? "up" : "down") : "unknown";
+    const stateLabel = state === "up" ? "Opérationnel"
+      : state === "down" ? "Indisponible" : "Non mesuré";
+    return `
+      <div class="service">
+        <div class="service-head">
+          <span class="service-name">${m.name}</span>
+          <span class="service-state ${state}">${stateLabel}</span>
+        </div>
+        <p class="service-desc">${m.description}${
+          up === null
+            ? ""
+            : ` · ${up.percent} % sur ${
+                up.days >= HISTORY_DAYS
+                  ? "90 jours"
+                  : up.days === 1
+                    ? "1 jour mesuré"
+                    : `${up.days} jours mesurés`
+              }`
+        }</p>
+        ${renderBars(days)}
+      </div>`;
+  }).join("");
+
+  const open = Object.values(incidents.open ?? {});
+  const past = (incidents.past ?? []).slice(0, 10);
+  const all = [
+    ...open.map((i) => ({ ...i, ongoing: true })),
+    ...past.map((i) => ({ ...i, ongoing: false })),
+  ];
+  document.getElementById("incidents").innerHTML = all.length === 0
+    ? '<p class="empty">Aucun incident sur les 90 derniers jours.</p>'
+    : all.map((i) => `
+        <div class="incident">
+          <b>${i.name}</b> — ${i.ongoing ? "interruption en cours" : "interruption résolue"}
+          <span class="when">Début ${frDate(i.startedAt)}${
+            i.endedAt ? ` · Fin ${frDate(i.endedAt)}` : ""
+          }</span>
+        </div>`).join("");
+
+  document.getElementById("checked").textContent =
+    status.checkedAt ? `Dernière mesure : ${frDate(status.checkedAt)}` : "";
+}
+
+load();
+// La page reste ouverte pendant une panne : on rafraîchit sans intervention.
+setInterval(load, 60_000);
+</script>
+</body>
+</html>
