@@ -1,30 +1,30 @@
 {
-	"checkedAt": "2026-08-22T23:25:56.393Z",
+	"checkedAt": "2026-08-22T23:41:53.612Z",
 	"allUp": true,
 	"monitors": {
 		"portail": {
 			"up": true,
 			"status": 200,
-			"ms": 579,
-			"checkedAt": "2026-08-22T23:25:56.393Z"
+			"ms": 694,
+			"checkedAt": "2026-08-22T23:41:53.612Z"
 		},
 		"espace-marketing": {
 			"up": true,
 			"status": 200,
-			"ms": 486,
-			"checkedAt": "2026-08-22T23:25:56.393Z"
+			"ms": 427,
+			"checkedAt": "2026-08-22T23:41:53.612Z"
 		},
 		"suivi": {
 			"up": true,
 			"status": 200,
-			"ms": 439,
-			"checkedAt": "2026-08-22T23:25:56.393Z"
+			"ms": 463,
+			"checkedAt": "2026-08-22T23:41:53.612Z"
 		},
 		"envoi": {
 			"up": true,
 			"status": 401,
-			"ms": 512,
-			"checkedAt": "2026-08-22T23:25:56.393Z"
+			"ms": 429,
+			"checkedAt": "2026-08-22T23:41:53.612Z"
 		}
 	}
 }
